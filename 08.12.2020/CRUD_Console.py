@@ -3,13 +3,18 @@ class Categoria:
     __nome : str
     __id_mae : int
 
-    def set_id(self, id) -> None:
+    def set_id(self, id : int) -> None:
         self.__id = int(id)
-    def set_nome(self, nome) -> None:
-        if nome != '':
-            self.__nome = str(nome)
-    def set_id_mae(self, id) -> None:
-            self.__id_mae = id
+    def set_nome(self, nome : str) -> None:
+        try:
+            if nome != '':
+                self.__nome = str(nome)
+            else:
+                raise Exception
+        except:
+            print('O nome da categoria não pode ser nulo.')
+    def set_id_mae(self, id : int) -> None:
+        self.__id_mae = int(id)
 
     def get_id(self) -> int:
         return self.__id
@@ -27,9 +32,9 @@ class Produto:
     __dimensoes : list
     __categorias : list
 
-    def set_id(self, id) -> None:
+    def set_id(self, id : int) -> None:
         self.__id = int(id)
-    def set_nome(self, nome) -> None:
+    def set_nome(self, nome : str) -> None:
         try:
             if nome != '':
                 self.__nome = str(nome)
@@ -37,7 +42,7 @@ class Produto:
                 raise Exception
         except:
             print('O nome deve ser alfanumérico e não nulo.')
-    def set_descricao(self, descricao) -> None:
+    def set_descricao(self, descricao : str) -> None:
         try:
             if len(descricao) >= 20:
                 self.__descricao = str(descricao)
@@ -45,7 +50,7 @@ class Produto:
                 raise Exception
         except:
             print('A descrição deve conter no minímo 20 caracteres alfanuméricos.')
-    def set_preco(self, preco) -> None:
+    def set_preco(self, preco : float) -> None:
         try:
             if int(preco) > 0:
                 self.__preco = float(preco)
@@ -53,7 +58,7 @@ class Produto:
                 raise Exception
         except:
             print('O preço deve ser numérico e maior que zero.')
-    def set_peso(self, peso) -> None:
+    def set_peso(self, peso : float) -> None:
         try:
             if float(peso) > 0:
                 self.__peso = float(peso)
@@ -62,7 +67,7 @@ class Produto:
         except:
             print('O peso deve ser numérico e maior do que zero.')
 
-    def set_dimensoes(self, dimensoes) -> None:
+    def set_dimensoes(self, dimensoes : list) -> None:
         try:
             dimensoes[0] = float(dimensoes[0])
             dimensoes[1] = float(dimensoes[1])
@@ -75,7 +80,7 @@ class Produto:
         except:
             print('As dimensões devem conter valores numéricos acima de zero.')
 
-    def set_categorias(self, cat):
+    def set_categorias(self, cat: list):
         try:
             if len(cat) > 0:
                 self.__categorias = cat
@@ -99,25 +104,42 @@ class Produto:
     def get_categorias(self) -> list:
         return self.__categorias
     
-    
-    
-
+t_produtos = 0
+t_categorias = 6
 produtos = []
 categorias = []
 
-c = Categoria()
-d = Categoria()
-c.set_id(1)
-c.set_nome('Lucas')
-c.set_id_mae('')
-categorias.append(c)
-d.set_id(2)
-d.set_nome('thiago')
-d.set_id_mae(1)
-categorias.append(d)
+def criar_categoria2(id, nome, idmae):
+    c = Categoria()
 
-t_produtos = 0
-t_categorias = 2
+    c.set_id(id)
+    c.set_nome(nome)
+    c.set_id_mae(idmae)
+    categorias.append(c)
+
+criar_categoria2(1, 'informatica', 0)
+criar_categoria2(2, 'computadores', 1)
+criar_categoria2(3, 'notebook', 1)
+criar_categoria2(4, 'beleza', 0)
+criar_categoria2(5, 'sabonete', 4)
+criar_categoria2(6, 'shampoo', 4)
+
+def criar_categoria():
+    c = Categoria()
+    c.set_id(t_categorias + 1)
+    c_mae = 0
+    nome = input('    Nome da Categoria: ')
+    option = input('É uma subcategoria? Digite 1 para Sim: ')
+    if option == 1:
+        for c1 in categorias:
+            if c1.get_id_mae() == 0:
+                print('ID: ' + str(c1.get_id()) + ', Nome: ' + c1.get_nome())
+        c_mae = input('    Insira o ID da principal: ')
+    
+    c.set_nome(nome)
+    c.set_id_mae(c_mae)
+    
+    return c
 
 while(True):
     print('**** CADASTRO DE PRODUTOS ****\n1. Listar Categorias\n2. Listar Produtos\n3. Cadastrar Categorias\n4. Cadastrar Produtos\n5. Alterar Produto\n6. Deletar Produto\n0. Sair')
@@ -126,19 +148,17 @@ while(True):
         if len(categorias) == 0:
             print('  Nenhuma categoria cadastrada.  ')
         else:
-
+            print('Categorias:')
             for c in categorias:
-                    #mae = ''
-                    #print(c.get_id_mae())
-                    #if c.get_id_mae() != None:
-                    #    for c2 in categorias:
-                    #        if c2.get_id() == c.get_id_mae():
-                    #            mae = c2.get_nome()
-                    #            print(mae)
-                print('ID: ' + str(c.get_id()) + ', Nome: ' + c.get_nome() + ', ID Categoria Principal: ' + str(c.get_id_mae()))
+                if c.get_id_mae() == 0:
+                    print('    * ID: ' + str(c.get_id()) + ', Nome: ' + c.get_nome())
+                    for c1 in categorias:
+                        if c.get_id() == c1.get_id_mae():
+                            print('        - ID: ' + str(c1.get_id()) + ', Nome: ' + c1.get_nome() + ', ID Categoria Principal: ' + str(c1.get_id_mae()))
                 achou = True
+
     if option == 2:
-        if len(categorias) == 0:
+        if len(produtos) == 0:
             print('  Nenhum produto cadastrado.  ')
         else:
             achou = False
@@ -189,24 +209,11 @@ while(True):
                 print('  Nenhum registro encontrado.')
     elif option == 3:
         try:
-            c = Categoria()
-            c.set_id(t_categorias + 1)
-            c_mae = ''
-            nome = input('    Nome da Categoria: ')
-            option = input('É uma subcategoria? Digite 1 para Sim: ')
-            if option == '1':
-                for c1 in categorias:
-                    if c1.get_id_mae() == '':
-                        print('ID: ' + str(c1.get_id()) + ', Nome: ' + c1.get_nome())
-                c_mae = input('    Insira o ID da principal: ')
-            
-            c.set_nome(nome)
-            c.set_id_mae(c_mae)
-        except Exception as e:
-            print('  Informações da categoria inválidas. %s' % (str(e)))
-        finally:    
+            c = criar_categoria()
             categorias.append(c)
             t_categorias = t_categorias + 1
+        except Exception as e:
+            print('  Informações da categoria inválidas. %s' % (str(e)))
 
     elif option == 4:
         
@@ -226,12 +233,12 @@ while(True):
         while(True):
             existe = False
             for c in categorias:
-                if c.get_id_mae() == '':
+                if c.get_id_mae() == 0:
                     print('ID: ' + str(c.get_id()) + ', Nome: ' + c.get_nome())
             try:
                 c_id = int(input('Insira o ID da categoria: '))
                 for c in categorias:
-                    if c.get_id_mae() == '':
+                    if c.get_id_mae() == 0:
                         if c.get_id() == c_id:
                             existe = True
                 if existe == True:
@@ -252,7 +259,7 @@ while(True):
                     existe = False
                     t_subcategoria = 0
                     for c in categorias:
-                        if c.get_id_mae() != '':
+                        if c.get_id_mae() != 0:
                             if int(c.get_id_mae()) == c1:
                                 print('ID: ' + str(c.get_id()) + ', Nome: ' + c.get_nome())
                                 t_subcategoria += 1
