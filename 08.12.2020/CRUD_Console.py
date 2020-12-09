@@ -337,5 +337,5 @@ while(True):
                     produtos.remove(p)
     elif option == 0:
         print('Apagando galeria de produtos e categorias!')
-        print('Saindo!')
+        print('Saindo!!')
         break
